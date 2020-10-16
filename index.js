@@ -7,7 +7,7 @@ const { boolean } = require("yargs");
 const yargs = require("yargs");
 
 const EXPECTED_ZONE = "America/New_York";
-const SOON_DURATION = luxon.Duration.fromObject({ hours: 260, minutes: 30 });
+const SOON_DURATION = luxon.Duration.fromObject({ minutes: 30 });
 const CUSTOM_TIME_FORMAT = Object.assign(luxon.DateTime.TIME_SIMPLE, {
   timeZoneName: "short",
 });
