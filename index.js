@@ -50,11 +50,9 @@ const argv = yargs(process.argv)
   .help().argv;
 
 async function main() {
-  const meetingRows = await getMeetingRows(argv.spreadsheet, argv.apiKey);
-
-  for (const row of meetingRows) {
+  for (const row of await getMeetingRows(argv.spreadsheet, argv.apiKey)) {
     const dateTime = toDateTime(row.Date);
-    const duration = howLong(toDateTime(dateTime));
+    const duration = howLongUntil(dateTime);
     const soon = duration < SOON_DURATION;
 
     if (soon) {
@@ -68,8 +66,10 @@ async function main() {
       try {
         if (argv.dryRun) {
           console.log(JSON.stringify(payload, undefined, 2));
+          process.exit(0);
         } else {
           await axios.post(argv.webhook, payload);
+          process.exit(0);
         }
       } catch (err) {
         console.error(err);
@@ -77,6 +77,12 @@ async function main() {
       }
     }
   }
+  console.log(
+    `No upcoming meetings in the next ${SOON_DURATION.as(
+      "minutes"
+    )} minutes. Exiting.`
+  );
+  process.exit(0);
 }
 
 async function getMeetingRows(spreadsheet, apiKey, sheetTitle = "Agendas") {
@@ -99,7 +105,7 @@ function now() {
   return luxon.DateTime.local().setZone(EXPECTED_ZONE);
 }
 
-function howLong(dt) {
+function howLongUntil(dt) {
   return dt.diff(now(), ["days"]);
 }
 
