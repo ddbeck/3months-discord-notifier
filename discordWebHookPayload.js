@@ -1,5 +1,6 @@
 class Payload {
   constructor(notice, url, footerText, timestamp) {
+    // TODO: optional `this.content` attr to @ everyone?
     this.embeds = [
       {
         title: "Weekly 3months call on Zoom",
