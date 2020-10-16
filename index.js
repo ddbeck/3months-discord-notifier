@@ -1,8 +1,11 @@
 #!/usr/bin/env node
 
 const { GoogleSpreadsheet } = require("google-spreadsheet");
+const yargs = require("yargs");
 
-const { argv } = require("yargs")
+const Payload = require("./discordWebHookPayload");
+
+const { argv } = yargs()
   .scriptName("3months-discord-notifier")
   .usage("$0")
   .option("k", {
@@ -17,13 +20,18 @@ const { argv } = require("yargs")
     default: process.env.THREEMONTHS_SPREADSHEET_ID,
     defaultDescription: "$THREEMONTHS_SPREADSHEET_ID",
   })
+  .options("c", {
+    alias: "call-url",
+    description: "URL for Zoom or other video conferencing",
+    default: process.env.THREEMONTHS_CALL_URL,
+    defaultDescription: "$THREEMONTHS_CALL_URL",
+  })
   .help();
 
 async function main() {
   const doc = new GoogleSpreadsheet(argv.spreadsheet);
   doc.useApiKey(argv.apiKey);
   await doc.loadInfo(); // loads document properties and worksheets
-
   const sheet = doc.sheetsByTitle["Agendas"];
   const rows = await sheet.getRows();
   const upcoming = rows.filter(rowIsAnActiveAgenda);
