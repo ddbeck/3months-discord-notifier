@@ -27,7 +27,7 @@ const { argv } = yargs()
     default: process.env.THREEMONTHS_SPREADSHEET_ID,
     defaultDescription: "$THREEMONTHS_SPREADSHEET_ID",
   })
-  .options("c", {
+  .option("c", {
     alias: "call-url",
     description: "URL for Zoom or other video conferencing",
     default: process.env.THREEMONTHS_CALL_URL,
