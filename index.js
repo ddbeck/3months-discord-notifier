@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 
+const axios = require("axios");
 const { GoogleSpreadsheet } = require("google-spreadsheet");
 const luxon = require("luxon");
+const { boolean } = require("yargs");
 const yargs = require("yargs");
 
 const EXPECTED_ZONE = "America/New_York";
@@ -12,7 +14,7 @@ const CUSTOM_TIME_FORMAT = Object.assign(luxon.DateTime.TIME_SIMPLE, {
 
 const Payload = require("./discordWebHookPayload");
 
-const { argv } = yargs()
+const argv = yargs(process.argv)
   .scriptName("3months-discord-notifier")
   .usage("$0")
   .option("k", {
@@ -33,7 +35,19 @@ const { argv } = yargs()
     default: process.env.THREEMONTHS_CALL_URL,
     defaultDescription: "$THREEMONTHS_CALL_URL",
   })
-  .help();
+  .option("w", {
+    alias: "webhook",
+    description: "Discord webhook URL",
+    default: process.env.THREEMONTHS_DISCORD_URL,
+    defaultDescription: "$THREEMONTHS_DISCORD_URL",
+  })
+  .option("n", {
+    alias: "dry-run",
+    type: "boolean",
+    description: "Print payload and don't POST to Discord",
+    default: false,
+  })
+  .help().argv;
 
 async function main() {
   const meetingRows = await getMeetingRows(argv.spreadsheet, argv.apiKey);
@@ -51,7 +65,16 @@ async function main() {
         dateTime
       );
 
-      console.log(JSON.stringify(payload, undefined, 2));
+      try {
+        if (argv.dryRun) {
+          console.log(JSON.stringify(payload, undefined, 2));
+        } else {
+          await axios.post(argv.webhook, payload);
+        }
+      } catch (err) {
+        console.error(err);
+        console.trace(err);
+      }
     }
   }
 }

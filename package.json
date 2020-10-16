@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/ddbeck/3months-discord-notifier#readme",
   "dependencies": {
+    "axios": "^0.20.0",
     "google-spreadsheet": "^3.0.13",
     "luxon": "^1.25.0",
     "yargs": "^16.1.0"
