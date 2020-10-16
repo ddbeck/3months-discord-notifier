@@ -16,7 +16,7 @@ const Payload = require("./discordWebHookPayload");
 
 const argv = yargs(process.argv)
   .scriptName("3months-discord-notifier")
-  .usage("$0")
+  .usage("$0 [options]", "Post a meeting reminder to Discord.")
   .option("k", {
     alias: "api-key",
     description: "Google Sheets API key",
