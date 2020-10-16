@@ -7,8 +7,7 @@
     "3months-discord-notifier": "./index.js"
   },
   "scripts": {
-    "open-sheet": "sh -c 'open $THREEMONTHS_SHEET_URL'",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "open-sheet": "sh -c 'open $THREEMONTHS_SHEET_URL'"
   },
   "repository": {
     "type": "git",
