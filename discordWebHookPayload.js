@@ -3,7 +3,7 @@ class Payload {
     // TODO: optional `this.content` attr to @ everyone?
     this.embeds = [
       {
-        title: "Weekly 3months call on Zoom",
+        title: "3months call on Zoom starts soon!",
         description: notice,
         url,
         footer: {
