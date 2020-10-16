@@ -1,7 +1,11 @@
 #!/usr/bin/env node
 
 const { GoogleSpreadsheet } = require("google-spreadsheet");
+const luxon = require("luxon");
 const yargs = require("yargs");
+
+const EXPECTED_ZONE = "America/New_York";
+const SOON_DURATION = luxon.Duration.fromObject({ hours: 260, minutes: 30 });
 
 const Payload = require("./discordWebHookPayload");
 
@@ -29,16 +33,45 @@ const { argv } = yargs()
   .help();
 
 async function main() {
-  const doc = new GoogleSpreadsheet(argv.spreadsheet);
+  const meetingRows = await getMeetingRows(argv.spreadsheet, argv.apiKey);
+
+  for (const row of meetingRows) {
+    const dateTime = toDateTime(row.Date);
+    const duration = howLong(toDateTime(dateTime));
+    const soon = duration < SOON_DURATION;
+
+    if (soon) {
+      const payload = new Payload(
+        row.Notice,
+        argv.callUrl,
+        "This is a test.",
+        dateTime
+      );
+
+      console.log(JSON.stringify(payload, undefined, 2));
+    }
+  }
+}
+
+async function getMeetingRows(spreadsheet, apiKey, sheetTitle = "Agendas") {
+  const doc = new GoogleSpreadsheet(spreadsheet);
   doc.useApiKey(argv.apiKey);
   await doc.loadInfo(); // loads document properties and worksheets
   const sheet = doc.sheetsByTitle["Agendas"];
   const rows = await sheet.getRows();
-  const upcoming = rows.filter(rowIsAnActiveAgenda);
-  for (const row of upcoming) {
-    console.log(`${row.Date}`);
-    console.log(`\t${row.Notice}`);
-  }
+  return rows.filter(rowIsAnActiveAgenda);
+}
+
+function toDateTime(rowDate) {
+  return luxon.DateTime.fromISO(rowDate).setZone();
+}
+
+function now() {
+  return luxon.DateTime.local().setZone(EXPECTED_ZONE);
+}
+
+function howLong(dt) {
+  return dt.diff(now(), ["days"]);
 }
 
 function rowIsAnActiveAgenda(row) {
