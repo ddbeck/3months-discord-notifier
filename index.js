@@ -6,6 +6,9 @@ const yargs = require("yargs");
 
 const EXPECTED_ZONE = "America/New_York";
 const SOON_DURATION = luxon.Duration.fromObject({ hours: 260, minutes: 30 });
+const CUSTOM_TIME_FORMAT = Object.assign(luxon.DateTime.TIME_SIMPLE, {
+  timeZoneName: "short",
+});
 
 const Payload = require("./discordWebHookPayload");
 
@@ -44,7 +47,7 @@ async function main() {
       const payload = new Payload(
         row.Notice,
         argv.callUrl,
-        "This is a test.",
+        dateTime.toLocaleString(CUSTOM_TIME_FORMAT),
         dateTime
       );
 
@@ -63,7 +66,10 @@ async function getMeetingRows(spreadsheet, apiKey, sheetTitle = "Agendas") {
 }
 
 function toDateTime(rowDate) {
-  return luxon.DateTime.fromISO(rowDate).setZone();
+  return luxon.DateTime.fromISO(rowDate, {
+    locale: "en-US",
+    zone: "America/New_York",
+  });
 }
 
 function now() {
