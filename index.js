@@ -3,7 +3,6 @@
 const axios = require("axios");
 const { GoogleSpreadsheet } = require("google-spreadsheet");
 const luxon = require("luxon");
-const { boolean } = require("yargs");
 const yargs = require("yargs");
 
 const EXPECTED_ZONE = "America/New_York";
