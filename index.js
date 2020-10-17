@@ -62,17 +62,12 @@ async function main() {
         dateTime
       );
 
-      try {
-        if (argv.dryRun) {
-          console.log(JSON.stringify(payload, undefined, 2));
-          process.exit(0);
-        } else {
-          await axios.post(argv.webhook, payload);
-          process.exit(0);
-        }
-      } catch (err) {
-        console.error(err);
-        console.trace(err);
+      if (argv.dryRun) {
+        console.log(JSON.stringify(payload, undefined, 2));
+        process.exit(0);
+      } else {
+        await axios.post(argv.webhook, payload);
+        process.exit(0);
       }
     }
   }
