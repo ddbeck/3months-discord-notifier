@@ -91,7 +91,7 @@ async function getMeetingRows(spreadsheet, apiKey, sheetTitle = "Agendas") {
   const doc = new GoogleSpreadsheet(spreadsheet);
   doc.useApiKey(argv.apiKey);
   await doc.loadInfo(); // loads document properties and worksheets
-  const sheet = doc.sheetsByTitle["Agendas"];
+  const sheet = doc.sheetsByTitle[sheetTitle];
   const rows = await sheet.getRows();
   return rows.filter(rowIsAnActiveAgenda);
 }
