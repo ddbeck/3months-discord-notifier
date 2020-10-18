@@ -6,7 +6,10 @@ const luxon = require("luxon");
 const yargs = require("yargs");
 
 const EXPECTED_ZONE = "America/New_York";
-const SOON_DURATION = luxon.Duration.fromObject({ minutes: 30 });
+const SOON_INTERVAL = luxon.Interval.fromDateTimes(
+  now().plus({ minutes: 5 }),
+  now().plus({ minutes: 34, seconds: 59 })
+);
 const CUSTOM_TIME_FORMAT = Object.assign(luxon.DateTime.TIME_SIMPLE, {
   timeZoneName: "short",
 });
@@ -49,12 +52,13 @@ const argv = yargs(process.argv)
   .help().argv;
 
 async function main() {
+  let nextMeeting = null;
+
   for (const row of await getMeetingRows(argv.spreadsheet, argv.apiKey)) {
     const dateTime = toDateTime(row.Date);
-    const duration = howLongUntil(dateTime);
-    const soon = duration < SOON_DURATION;
+    const meetingInNextHalfHour = SOON_INTERVAL.contains(dateTime);
 
-    if (soon) {
+    if (meetingInNextHalfHour) {
       const payload = new Payload(
         row.Notice,
         argv.callUrl,
@@ -70,12 +74,16 @@ async function main() {
         process.exit(0);
       }
     }
+
+    if (isNextMeeting(dateTime, nextMeeting)) {
+      nextMeeting = dateTime;
+    }
   }
-  console.log(
-    `No upcoming meetings in the next ${SOON_DURATION.as(
-      "minutes"
-    )} minutes. Exiting.`
-  );
+
+  if (nextMeeting) {
+    console.log(`Next meeting is ${nextMeeting.toRelative()}.`);
+  }
+  console.log(`No meetings in the next half hour. Exiting.`);
   process.exit(0);
 }
 
@@ -99,16 +107,20 @@ function now() {
   return luxon.DateTime.local().setZone(EXPECTED_ZONE);
 }
 
-function howLongUntil(dt) {
-  return dt.diff(now(), ["days"]);
-}
-
 function rowIsAnActiveAgenda(row) {
   if (row.Done === "TRUE" || row.Date === undefined || row.Date === "") {
     return false;
   } else {
     return true;
   }
+}
+
+function isFuture(dt) {
+  return dt.diffNow().as("milliseconds") > 0;
+}
+
+function isNextMeeting(current, previous) {
+  return isFuture(current) && (previous === null || current < previous);
 }
 
 try {
