@@ -12,9 +12,6 @@ const SOON_INTERVAL = luxon.Interval.fromDateTimes(
   now().plus({ minutes: 5 }),
   now().plus({ minutes: 34, seconds: 59 })
 );
-const CUSTOM_TIME_FORMAT = Object.assign(luxon.DateTime.TIME_SIMPLE, {
-  timeZoneName: "short",
-});
 
 const argv = yargs(process.argv)
   .scriptName("3months-discord-notifier")
@@ -59,12 +56,7 @@ async function main() {
     const meetingInNextHalfHour = SOON_INTERVAL.contains(dateTime);
 
     if (meetingInNextHalfHour) {
-      const payload = new Payload(
-        row.Notice,
-        argv.callUrl,
-        dateTime.toLocaleString(CUSTOM_TIME_FORMAT),
-        dateTime
-      );
+      const payload = new Payload(row.Notice, argv.callUrl, "JFDI", dateTime);
 
       if (argv.dryRun) {
         console.log(JSON.stringify(payload, undefined, 2));
