@@ -5,6 +5,8 @@ const { GoogleSpreadsheet } = require("google-spreadsheet");
 const luxon = require("luxon");
 const yargs = require("yargs");
 
+const Payload = require("./discordPayload");
+
 const EXPECTED_ZONE = "America/New_York";
 const SOON_INTERVAL = luxon.Interval.fromDateTimes(
   now().plus({ minutes: 5 }),
@@ -13,8 +15,6 @@ const SOON_INTERVAL = luxon.Interval.fromDateTimes(
 const CUSTOM_TIME_FORMAT = Object.assign(luxon.DateTime.TIME_SIMPLE, {
   timeZoneName: "short",
 });
-
-const Payload = require("./discordWebHookPayload");
 
 const argv = yargs(process.argv)
   .scriptName("3months-discord-notifier")
