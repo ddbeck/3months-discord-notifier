@@ -15,11 +15,13 @@ For noncommercial purposes, you can use or modify this software for free, but co
 This tool requires Node.js 14 and expects that you have:
 
 - A Google Sheets API key
-- A spreadsheet with these columns and expected values:
+- A document with a sheet titled `Agendas` containing these columns and expected values:
 
   | `Done`                   | `Date`                                                            | `Notice`                                            |
   | ------------------------ | ----------------------------------------------------------------- | --------------------------------------------------- |
   | `TRUE` or `FALSE` values | ISO 8601-formatted dates and times in the `America/New_York` zone | A string with a brief meeting agenda or description |
+
+  Other columns are ignored, as long as they don't conflict with these column names.
 
 - A link to a Zoom call or similar meeting service
 - A Discord channel's webhook URL
@@ -41,4 +43,10 @@ This tool requires Node.js 14 and expects that you have:
 
    ```
    */30 * * * * 3months-discord-notifier
+   ```
+
+   Or how I'm actually running it, with [direnv](https://direnv.net/) to manage environment variables:
+
+   ```
+   */30 * * * * direnv exec /home/ddbeck/projects/3months-discord-notifier 3months-discord-notifier &>> /home/ddbeck/projects/3months-discord-notifier/output.log
    ```
