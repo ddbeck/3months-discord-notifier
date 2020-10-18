@@ -26,7 +26,7 @@ This tool requires Node.js 14 and expects that you have:
 
 ## Set up and usage
 
-1. Install the package. Run `npm install -g https://github.com/ddbeck/3months-discord-notifier`.
+1. Install the package. Run `npm install -g git+https://github.com/ddbeck/3months-discord-notifier`.
 
 2. Set the following environment variables (or use command line switches, see `--help` for details):
 
@@ -37,4 +37,8 @@ This tool requires Node.js 14 and expects that you have:
 
 3. Test that the script works. Make sure there's a meeting in your spreadsheet that's happening in the next 30 minutes. Run `3months-discord-notifier --dry-run`. If everything's set up properly, the script prints the JSON payload for the webhook.
 
-4. Set up a cron job with the same environment to run every 30 minutes.
+4. Set up a cron job with the same environment to run every 30 minutes. For example:
+
+   ```
+   */30 * * * * 3months-discord-notifier
+   ```
