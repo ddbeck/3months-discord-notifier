@@ -73,9 +73,13 @@ async function main() {
   }
 
   if (nextMeeting) {
-    console.log(`Next meeting is ${nextMeeting.toRelative()}.`);
+    console.log(
+      `${now().toISOTime()}: Next meeting is ${nextMeeting.toRelative()}.`
+    );
   }
-  console.log(`No meetings in the next half hour. Exiting.`);
+  console.log(
+    `${now().toISOTime()}: No meetings in the next half hour. Exiting.`
+  );
   process.exit(0);
 }
 
