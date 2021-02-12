@@ -74,7 +74,9 @@ async function main() {
 
   if (nextMeeting) {
     console.log(
-      `${now().toISOTime()}: Next meeting is ${nextMeeting.toRelative()}.`
+      `${now().toISOTime()}: Next meeting is ${nextMeeting.toRelative()} (${nextMeeting.toLocaleString(
+        luxon.DateTime.DATETIME_FULL
+      )}).`
     );
   }
   console.log(
