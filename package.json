@@ -1,6 +1,6 @@
 {
   "name": "@ddbeck/3months-discord-notifier",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Post 3months meeting reminders to Discord",
   "main": "index.js",
   "bin": {
